@@ -1,0 +1,19 @@
+Accuracy was chosen as the performance metric [5]. As a refresher, the accuracy is the sum of true
+153 positve and true negative divided by the sum of sum of all cases (True Positive + True Negative +
+154 False Positive + False Negative). In the case of multilabel classification, keras calculates the correct
+155 predictions (True Positive and True Negative) individually. For example, if the predicted label is
+156 [0,1,0] and the actual lable is [0,0,0], then the accuracy would be 2/3 = 0.66 (2 True Negatives/All
+157 the cases).
+158 If the dataset would have been imbalanced then the accuracy metric would have been a misleading
+159 result.
+160
+161 For example if the y:pred = [1,0,0,0,0,0,1] and the y=[0,0,0,0,0,1,1], the True Negatives = 4, False
+162 Negative = 1, True Positive = 1, False Positive = 1, then the accuracy would be (true negative + true
+163 positive) / (all the cases) = 5/7 = 0.71. The result is surprisingly high as predicted the presence of
+164 only one class (label =1) correctly. Moreover, if there is alot of images with the ground truth label
+165 of y=[0,0,0,0,0,1,1] (an imbalanced dataset), and a model that keeps predicting the same ypred:
+166 [1,0,0,0,0,0,1], then the accuracy will be continue to be high.
+167
+168 However, since the data is balanced, accuracy would yield a correct estimate in our case. If our data
+169 was imbalanced then we would have to rely on precision and recall score that also took into account
+170 of other cases ignored by accuracy.
