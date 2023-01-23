@@ -1,0 +1,68 @@
+The data are heavily imbalanced. For example, there are 1994 images of person present in the training
+53 data. However, about one tenth of images pertains to the animal "cow". I test this imbalance data
+54 using a CNN built from scratch with about 21 million parameters with dataset comprimising on
+55 person, aeroplane, bicycle, car, cat and car. I see a accuracy of 70 percent in traning. However,
+56 when evaluating the model on a test data comprimising of images containing only the person, the
+57 accuracy reaches near 100 percent. Interestingly, the accuracy barely touches 10 percent when the
+58 test images contains everything but person.
+59 This explains an important concept in the field of machine learning. The model has learnt the features
+60 of humans very well as the input data is heavily skewed towards person. Therefore, it performs
+61 exceptionally well in recognizing person given an image. However, since the number of images
+62 for other classes are comparatively low than the person class, the model fails to capture the unique
+63 features (patterns) of the other four classes. Reading several articles, I realized class imbalance is a
+64 common problem in multilabel image classification. Articles [3] demonstrates some promising ways
+65 to tackle the issue by using different performance metric and using data augmentation.
+66 However, since the project requires only 5 classes in the multilabel problem, I decided to choose
+67 those 5 classes that are about the same in numbers. I also made sure to pick the classes that are
+68 high in number. This way the model can have as many data to be trained with. These classes were
+69 bird(395),car(590), cat(539), chair(566), and dog(632). Running the model with the same architecture,
+70 caused the accuracy score to go down to 10 percent during training. As a first instinct I suspected
+71 the model with 21 million parameters might not be too simple for a complex data. Therefore, I
+72 bumped the parameters to about 768 million parameters by decreasing the strides in all layers, and
+73 significantly increase the neurons in the dense layers. My attempt to intentionally overfit the data
+74 failed as the accuracy score remained almost the same. I also employed intense hyperparameter tuning
+75 like chaning the activation function from relu to tanh, selu or using a different weight initialization
+2
+76 like "he-initializer" (as i suspected the expoding/vanishing gradient problem might be the issue).
+77 However, the accuracy score did not show any significant improvements. Using data augmentaion
+78 might have made the problem more worse, as the model stuggled to fit with the current data.
+79 I suspected the data might be still unbalanced as the number of images pertaining to the five chosen
+80 classes comprimised of about 2500 images while the remaining half of the training images consisted
+81 of images not containing any of the chosen five classes. In order to fix the heavy imbalance, I
+82 performed downsampling of the data by incorporating only 260 (almost equal to the frequency of
+83 bird class) images that did not consist any of the chosen five classes. The change resulted in a 20
+84 percent overall accuracy score. (Note: I decided to stick with the accuracy metric instead of precison,
+85 recall or f1-score as the frequency of the five classes were almost the same (balanced dataset). After
+86 doing the necessary preprocessing and gaining a mere 20 percent in the accuracy, I suspected the
+87 CNN created from ground up might be flawed in harvesting the essential features of the input images.
+88 Therefore, I decided to rely on pretrained models and did some study on transfer learning[4].
+89 Many pretrained models were studied to choose the most ideal pretrained model. Upon research
+90 Xception model was selected for the problem. Firstly, Xception consisted of the inception module
+91 used by GoogleNet. The inception module enabled GoogleNet to make efficient use of parameters.
+92 Moreover, it had 10 times fewer parameters than AlexNet. The inception module has four different
+93 branch. Each branch with different sizes of filters captures patterns at different scales. Moreover, the
+94 module also consist of 1X1 kernels. Even though these pixels cannot detect features as they study
+95 only pixel at a time, they can capture patterns in the depth dimension of the feature maps. Using these
+96 unit size kernels also reduces number of parameters. Contrary to a linear fashioned CNN, model
+97 incorporating the inception module is able to run different pairs of filters across the input capturing
+98 more complex patterns.
+
+8 The Xception model has the typical operations of applying convolution operations with relu activation
+119 functions followed by batch normalizations to prevent overfitting and seperable convolutional layers
+120 to study the cross-channel patterns of the image and the standard max pooling operations. Similar
+121 process is repeated multiple times making the model 71 layers deep and with 22.8 million parameters.
+122 We download the pretrained model pretrained on imagenet images. As the imagenet consist of all the
+123 five classes we are trying to classify, we hope to achieve good performance. The Xception network is
+124 a CNN, it expects images of size 224X224 and rgb pixel values (0-255). We achieve the requirements
+125 by using the preprocessing function of the Xception model. As the Xception model originally built
+126 for multiclass classifications we had to slight modifications to the structure. We removed the output
+3
+127 layer that incorporates softmax function and replaced it with dense layers with 5 neurons and the
+128 appropriate sigmoid activation function as the classes are independent of each other. Our modified
+129 model has 20,871,725 parameters. As the model are pretrained and the added layer stills needs
+130 training, we freeze the pretrained layers and only train the higher layer. After the training phase, we
+131 then unfreeze the remaining layers and set a lower learning rate of 0.01, to prevent damaging the
+132 already trained layers. We then put our model to test using the test set (images that our model has
+133 never seen before).
+134 As we are dealing with sigmoid function, where the classes are independent of each other, we use
+135 binary cross entropy as our loss function.
