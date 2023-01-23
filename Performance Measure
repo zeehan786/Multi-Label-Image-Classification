@@ -15,5 +15,5 @@ Accuracy was chosen as the performance metric [5]. As a refresher, the accuracy 
 166 [1,0,0,0,0,0,1], then the accuracy will be continue to be high.
 167
 168 However, since the data is balanced, accuracy would yield a correct estimate in our case. If our data
-169 was imbalanced then we would have to rely on precision and recall score that also took into account
+169 was imbalanced then I would have to rely on precision and recall score that also took into account
 170 of other cases ignored by accuracy.
